@@ -1,14 +1,15 @@
 const express = require("express");
 
 const app = express();
+const port = 5500;
 
 
-app.use("/", (req, res) => {
-    res.send("Hello there...")
+app.get("/user", (req, res) => {
+    res.send({ name: "jack", number: 542545 });
 })
 app.use("/first", (req, res) => {
     res.send("this is first route")
 })
-app.listen(7777, () => {
-    console.log("server is running on 7777");
+app.listen(port, () => {
+    console.log("server is running on 5500");
 })
