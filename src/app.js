@@ -1,17 +1,21 @@
-const express = require("express");
+const express = require('express');
+
+const { adminAuth } = require('./middlewares/auth');
 
 const app = express();
-const port = 5500;
+const PORT = 5500;
 
+app.use("/admin", adminAuth);
+app.get("/", (req, res) => {
+    res.send("connected on 5500");
+})
 
-app.get("/user/:userId", (req, res) => {
-    // console.log(req.query)
-    console.log(req.params)
-    res.send({ name: "jack", number: 542545 });
+app.get("/admin/authentication", (req, res) => {
+    res.send("success");
 })
-app.use("/first", (req, res) => {
-    res.send("this is first route")
+app.get("/admin/alldata", (req, res) => {
+    res.send("data sent");
 })
-app.listen(port, () => {
-    console.log("server is running on 5500");
+app.listen(PORT, () => {
+    console.log(`server is running on port number ${PORT}`)
 })
