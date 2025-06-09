@@ -17,5 +17,5 @@ app.get("/admin/alldata", (req, res) => {
     res.send("data sent");
 })
 app.listen(PORT, () => {
-    console.log(`server is running on port number ${PORT}`)
+    console.log(`server is running on port number ${PORT}`);
 })
