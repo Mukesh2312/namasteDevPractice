@@ -19,6 +19,8 @@ app.get("/admin/alldata", (req, res) => {
     res.send("data sent");
 })
 
+
+
 app.post("/singup", async (req, res) => {
 
     try {
@@ -43,6 +45,50 @@ app.post("/singup", async (req, res) => {
 
 });
 
+// find user by name
+app.get("/user", async (req, res) => {
+    const email = req.body.emailId;
+
+    try {
+        const users = await User.findOne({ emailId: email });
+        if (!users) {
+            res.status(404).send("User not found");
+
+        }
+        else {
+            res.send(users);
+        }
+        // const users = await User.find({ emailId: email });
+        // if (users.length === 0) {
+        //     res.status(404).send("User not found");
+        // } else {
+
+        //     res.send(users);
+        // }
+
+    } catch (error) {
+        consol.log(error);
+        res.status(500).send("Something went wrong...");
+
+    }
+
+
+})
+
+// find one user by email only one user if there are duplicate
+
+app.get("/")
+// feed api fetch all the data from the database user data
+
+app.get("/feed", async (req, res) => {
+    try {
+        const allUser = await User.find({});
+        res.send(allUser);
+    } catch (error) {
+        consol.log(error);
+        res.status(500).send("Something went wrong...");
+    }
+})
 connectDb().then(() => {
     console.log("successfull connection established to the database");
     app.listen(PORT, () => {
