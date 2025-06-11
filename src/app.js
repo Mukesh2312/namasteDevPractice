@@ -39,11 +39,6 @@ app.post("/singup", async (req, res) => {
         console.log(error);
         res.status(500).send("Something went wrong");
     }
-
-
-
-
-
 });
 
 // find user by name
@@ -59,6 +54,7 @@ app.get("/user", async (req, res) => {
         else {
             res.send(users);
         }
+        // finding all the user data
         // const users = await User.find({ emailId: email });
         // if (users.length === 0) {
         //     res.status(404).send("User not found");
@@ -76,7 +72,7 @@ app.get("/user", async (req, res) => {
 
 })
 
-// find one user by email only one user if there are duplicate
+
 
 
 // feed api fetch all the data from the database user data
@@ -106,15 +102,34 @@ app.delete("/user/:id", async (req, res) => {
         res.send("user deleted successfully");
 
     } catch (error) {
-        consol.log(error);
+        console.log(error);
         res.status(500).send("Something went wrong...");
     }
 })
 
 
 // update the database/user
+app.patch("/user/:id", async (req, res) => {
+    const { id } = req.params;
+    const data = req.body;
+    try {
 
-// app.patch()
+        // console.log(data)
+        const userData = await User.findByIdAndUpdate(id, data);
+
+        if (!userData) {
+            return res.status(404).send("User not Found");
+        }
+        res.send("user updated successfully");
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Something went wrong...");
+    }
+
+
+})
+
 // database connection establishment
 connectDb().then(() => {
     console.log("successful connection established to the database");

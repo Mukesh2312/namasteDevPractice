@@ -16,8 +16,12 @@ const userSchema = new Schema({
     },
     age: {
         type: String
-    }
-})
+    },
+
+
+
+},
+    { timestamps: true })
 
 const User = mongoose.model("User", userSchema);
 module.exports = {
