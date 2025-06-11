@@ -25,6 +25,7 @@ app.post("/singup", async (req, res) => {
 
     try {
         const { firstName, lastName, emailId, age, password } = req.body;
+        console.log(req.body)
         const user = new User({
             firstName,
             lastName,
@@ -77,7 +78,7 @@ app.get("/user", async (req, res) => {
 
 // find one user by email only one user if there are duplicate
 
-app.get("/")
+
 // feed api fetch all the data from the database user data
 
 app.get("/feed", async (req, res) => {
@@ -89,8 +90,34 @@ app.get("/feed", async (req, res) => {
         res.status(500).send("Something went wrong...");
     }
 })
+
+// delete user by id
+
+app.delete("/user/:id", async (req, res) => {
+
+    try {
+        const { id } = req.params;
+        const user = await User.findByIdAndDelete(id);
+
+        if (!user) {
+            return res.status(404).send("User not Found");
+        }
+
+        res.send("user deleted successfully");
+
+    } catch (error) {
+        consol.log(error);
+        res.status(500).send("Something went wrong...");
+    }
+})
+
+
+// update the database/user
+
+// app.patch()
+// database connection establishment
 connectDb().then(() => {
-    console.log("successfull connection established to the database");
+    console.log("successful connection established to the database");
     app.listen(PORT, () => {
         console.log(`server is running on port number ${PORT}`);
     })
