@@ -43,10 +43,10 @@ app.post("/singup", async (req, res) => {
 
 // find user by name
 app.get("/user", async (req, res) => {
-    const email = req.body.emailId;
+    // const email = req.body.emailId;
 
     try {
-        const users = await User.findOne({ emailId: email });
+        const users = await User.find();
         if (!users) {
             res.status(404).send("User not found");
 
