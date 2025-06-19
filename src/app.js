@@ -24,14 +24,23 @@ app.get("/admin/alldata", (req, res) => {
 app.post("/singup", async (req, res) => {
 
     try {
-        const { firstName, lastName, emailId, age, password } = req.body;
+        const { firstName, lastName, emailId, age, password, skills, about, photoUrl } = req.body;
+        // checking duplicate user registration
+        const existingUser = await User.findOne({ emailId: emailId });
+        if (existingUser) {
+            return res.status(400).send("Email should be unique");
+        }
         console.log(req.body)
+        // creating new uesr and saving in the database
         const user = new User({
             firstName,
             lastName,
             emailId,
             age,
-            password
+            password,
+            photoUrl,
+            about,
+            skills
         });
         await user.save();
         res.send("user added successfully");
@@ -72,11 +81,7 @@ app.get("/user", async (req, res) => {
 
 })
 
-
-
-
 // feed api fetch all the data from the database user data
-
 app.get("/feed", async (req, res) => {
     try {
         const allUser = await User.find({});

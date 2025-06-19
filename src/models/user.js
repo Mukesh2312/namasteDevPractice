@@ -3,24 +3,40 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema({
     firstName: {
-        type: String
+        type: String,
+        required: true,
     },
     lastName: {
-        type: String
+        type: String,
     },
     emailId: {
         type: String,
+        lowerCase: true,
+        required: true,
+        index: true,
+        unique: true,
 
     },
     password: {
-        type: String
+        type: String,
     },
     age: {
-        type: String
+        type: String,
     },
     gender: {
-        type: String
+        type: String,
     },
+    photoUrl: {
+        type: String,
+        default: "https://placehold.co/50",
+    },
+    skills: {
+        type: [String],
+    },
+    about: {
+        type: String,
+        default: "This is Default statement",
+    }
 
 
 
