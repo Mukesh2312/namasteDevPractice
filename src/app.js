@@ -3,6 +3,7 @@ const express = require('express');
 const { adminAuth } = require('./middlewares/auth');
 const { connectDb } = require('./config/database');
 const { User } = require("./models/user")
+const { validateSignUpData } = require('./utils/validation')
 
 const app = express();
 const PORT = 5500;
@@ -24,8 +25,11 @@ app.get("/admin/alldata", (req, res) => {
 app.post("/singup", async (req, res) => {
 
     try {
+
+        // validation data
+        validateSignUpData(req);
         const { firstName, lastName, emailId, age, password, skills, about, photoUrl } = req.body;
-        // checking duplicate user registration
+        // checking duplicate user registration or already exists
         const existingUser = await User.findOne({ emailId: emailId });
         if (existingUser) {
             return res.status(400).send("Email should be unique");
@@ -46,7 +50,7 @@ app.post("/singup", async (req, res) => {
         res.send("user added successfully");
     } catch (error) {
         console.log(error);
-        res.status(500).send("Something went wrong");
+        res.status(400).json({ Error: error.message });
     }
 });
 
@@ -120,6 +124,7 @@ app.patch("/user/:id", async (req, res) => {
     try {
 
         // console.log(data)
+        // this line will update the data into the database
         const userData = await User.findByIdAndUpdate(id, data);
 
         if (!userData) {
