@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 
 const { adminAuth } = require('./middlewares/auth');
 const { connectDb } = require('./config/database');
@@ -28,7 +29,11 @@ app.post("/singup", async (req, res) => {
 
         // validation data
         validateSignUpData(req);
+
         const { firstName, lastName, emailId, age, password, skills, about, photoUrl } = req.body;
+        // hashing password before storing into the database
+        const securingPassword = await bcrypt.hash(password, 10)
+        console.log(securingPassword);
         // checking duplicate user registration or already exists
         const existingUser = await User.findOne({ emailId: emailId });
         if (existingUser) {
@@ -41,7 +46,7 @@ app.post("/singup", async (req, res) => {
             lastName,
             emailId,
             age,
-            password,
+            password: securingPassword,
             photoUrl,
             about,
             skills
@@ -54,6 +59,31 @@ app.post("/singup", async (req, res) => {
     }
 });
 
+// login
+app.post("/login", async (req, res) => {
+    try {
+        const { emailId, password } = req.body;
+
+        // checking if the user is registered or not
+        const isUserPresent = await User.find({ emailId: emailId });
+        if (!isUserPresent) {
+            throw new Error("Error : User is Not found!");
+        }
+
+        const isPasswordValid = bcrypt.compare(password, isUserPresent.password)
+
+        if (isPasswordValid) {
+            res.send("Login Successful");
+        }
+        else {
+            throw new Error("Password is not valid");
+        }
+    } catch (error) {
+
+        console.log(error);
+        res.status(400).json({ Error: error.message });
+    }
+})
 // find user by name
 app.get("/user", async (req, res) => {
     // const email = req.body.emailId;
