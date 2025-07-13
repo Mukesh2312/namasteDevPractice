@@ -4,12 +4,14 @@ const bcrypt = require('bcrypt');
 const { adminAuth } = require('./middlewares/auth');
 const { connectDb } = require('./config/database');
 const { User } = require("./models/user")
-const { validateSignUpData } = require('./utils/validation')
+const { validateSignUpData } = require('./utils/validation');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = 5500;
 
 app.use(express.json());
+app.use(cookieParser());
 
 // routers
 app.get("/", (req, res) => {
@@ -66,14 +68,16 @@ app.post("/login", async (req, res) => {
         const { emailId, password } = req.body;
 
         // checking if the user is registered or not
-        const isUserPresent = await User.find({ emailId: emailId });
+        const isUserPresent = await User.findOne({ emailId: emailId });
         if (!isUserPresent) {
             throw new Error("Error : User is Not found!");
         }
 
-        const isPasswordValid = bcrypt.compare(password, isUserPresent.password)
+        const isPasswordValid = await bcrypt.compare(password, isUserPresent.password)
 
         if (isPasswordValid) {
+            // creating JWT with cookie
+            // res.cookie("token", "jhsdhfhdsfwefdfdsfdhoiwejfiashiuhfashfuiew");
             res.send("Login Successful");
         }
         else {
@@ -84,6 +88,13 @@ app.post("/login", async (req, res) => {
         console.log(error);
         res.status(400).json({ Error: error.message });
     }
+})
+
+// user profile route 
+app.get("/profile", async (req, res) => {
+    const cookie = req.cookies;
+    console.log(cookie);
+    res.send("Profile section Reading cookie...")
 })
 // find user by name
 app.get("/user", async (req, res) => {
