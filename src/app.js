@@ -10,6 +10,8 @@ const app = express();
 const PORT = 5500;
 
 app.use(express.json());
+
+// routers
 app.get("/", (req, res) => {
     res.send("connected on 5500");
 })
@@ -26,7 +28,6 @@ app.get("/admin/alldata", (req, res) => {
 app.post("/singup", async (req, res) => {
 
     try {
-
         // validation data
         validateSignUpData(req);
 
