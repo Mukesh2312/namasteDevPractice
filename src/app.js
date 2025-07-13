@@ -6,6 +6,7 @@ const { connectDb } = require('./config/database');
 const { User } = require("./models/user")
 const { validateSignUpData } = require('./utils/validation');
 const cookieParser = require('cookie-parser');
+const jwt = require("jsonwebtoken");
 
 const app = express();
 const PORT = 5500;
@@ -77,7 +78,11 @@ app.post("/login", async (req, res) => {
 
         if (isPasswordValid) {
             // creating JWT with cookie
-            // res.cookie("token", "jhsdhfhdsfwefdfdsfdhoiwejfiashiuhfashfuiew");
+            // first argument is the data that we want to hide
+            // second argument is secret key
+            const token = await jwt.sign({ _id: isUserPresent._id }, "DEV@Tinder$790");
+            console.log(token)
+            res.cookie("token", token);
             res.send("Login Successful");
         }
         else {
@@ -92,9 +97,25 @@ app.post("/login", async (req, res) => {
 
 // user profile route 
 app.get("/profile", async (req, res) => {
-    const cookie = req.cookies;
-    console.log(cookie);
-    res.send("Profile section Reading cookie...")
+    try {
+
+        const cookie = req.cookies;
+        const { token } = cookie;
+        if (!token) {
+            throw new Error("Invalid Token");
+        }
+        // console.log(cookie);
+
+        const decodedMessage = await jwt.verify(token, "DEV@Tinder$790");
+        const { _id } = decodedMessage;
+
+        // searching user by id
+        const loggedInUser = await User.findById(_id);
+        // console.log(loggedInUser);
+        res.send(loggedInUser)
+    } catch (error) {
+        res.status(400).json({ Error: error.message });
+    }
 })
 // find user by name
 app.get("/user", async (req, res) => {
