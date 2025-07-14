@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 
-// const { adminAuth } = require('./middlewares/auth');
+const { userAuth } = require('./middlewares/auth');
 const { connectDb } = require('./config/database');
 const { User } = require("./models/user")
 const { validateSignUpData } = require('./utils/validation');
@@ -97,21 +97,21 @@ app.post("/login", async (req, res) => {
 })
 
 // user profile route 
-app.get("/profile", async (req, res) => {
+app.get("/profile", userAuth, async (req, res) => {
     try {
-
-        const cookie = req.cookies;
-        const { token } = cookie;
-        if (!token) {
-            throw new Error("Invalid Token");
-        }
+        const loggedInUser = req.user;
+        // const cookie = req.cookies;
+        // const { token } = cookie;
+        // if (!token) {
+        //     throw new Error("Invalid Token");
+        // }
         // console.log(cookie);
 
-        const decodedMessage = await jwt.verify(token, "DEV@Tinder$790");
-        const { _id } = decodedMessage;
+        // const decodedMessage = await jwt.verify(token, "DEV@Tinder$790");
+        // const { _id } = decodedMessage;
 
         // searching user by id
-        const loggedInUser = await User.findById(_id);
+        // const loggedInUser = await User.findById(_id);
         // console.log(loggedInUser);
         res.send(loggedInUser)
     } catch (error) {
