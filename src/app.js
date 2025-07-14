@@ -37,13 +37,14 @@ app.post("/singup", async (req, res) => {
         const { firstName, lastName, emailId, age, password, skills, about, photoUrl } = req.body;
         // hashing password before storing into the database
         const securingPassword = await bcrypt.hash(password, 10)
-        console.log(securingPassword);
+        // console.log(securingPassword);
+
         // checking duplicate user registration or already exists
         const existingUser = await User.findOne({ emailId: emailId });
         if (existingUser) {
             return res.status(400).send("Email should be unique");
         }
-        console.log(req.body)
+        // console.log(req.body)
         // creating new uesr and saving in the database
         const user = new User({
             firstName,
@@ -58,7 +59,7 @@ app.post("/singup", async (req, res) => {
         await user.save();
         res.send("user added successfully");
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         res.status(400).json({ Error: error.message });
     }
 });
