@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 
-const { adminAuth } = require('./middlewares/auth');
+// const { adminAuth } = require('./middlewares/auth');
 const { connectDb } = require('./config/database');
 const { User } = require("./models/user")
 const { validateSignUpData } = require('./utils/validation');
@@ -82,7 +82,7 @@ app.post("/login", async (req, res) => {
             // first argument is the data that we want to hide
             // second argument is secret key
             const token = await jwt.sign({ _id: isUserPresent._id }, "DEV@Tinder$790");
-            console.log(token)
+            // console.log(token)
             res.cookie("token", token);
             res.send("Login Successful");
         }
