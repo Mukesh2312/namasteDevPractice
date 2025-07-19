@@ -3,7 +3,7 @@ const { User } = require("../models/user");
 const userAuth = async (req, res, next) => {
     try {
         // reading token from the req cookies
-        console.log(req)
+        // console.log(req)
         const { token } = req.cookies;
         if (!token) {
             throw new Error("Invalid Token...!!!!!");
