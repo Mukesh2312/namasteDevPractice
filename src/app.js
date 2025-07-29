@@ -19,7 +19,7 @@ app.use(cookieParser());
 
 
 
-app.post("/singup", async (req, res) => {
+app.post("/signup", async (req, res) => {
 
     try {
         // validation data
@@ -37,7 +37,7 @@ app.post("/singup", async (req, res) => {
             return res.status(400).send("Email should be unique");
         }
         // console.log(req.body)
-        // creating new uesr and saving in the database
+        // creating new user and saving in the database
         const user = new User({
             firstName,
             lastName,
@@ -68,19 +68,15 @@ app.post("/login", async (req, res) => {
             throw new Error("Error : User is Not found!");
         }
 
-        const isPasswordValid = await bcrypt.compare(password, isUserPresent.password)
+        const isPasswordValid = await isUserPresent.validatePassword(password);
 
         if (isPasswordValid) {
-            // creating JWT with cookie
-            // first argument is the data that we want to hide
-            // second argument is secret key
-            const token = await jwt.sign({ _id: isUserPresent._id }, "DEV@Tinder$790", {
-                expiresIn: "1d",
-            });
+
+            const token = await isUserPresent.getJWT();
             // console.log(token)
             // expiring cookie
             res.cookie("token", token, {
-                expires: new Date(Date.now() + 9000), httpOnly: true
+                expires: new Date(Date.now() + 900000), httpOnly: true
             });
             res.send("Login Successful");
         }
@@ -116,6 +112,20 @@ app.get("/profile", userAuth, async (req, res) => {
     } catch (error) {
         res.status(400).json({ Error: error.message });
     }
+})
+
+// sending connection request
+
+app.post("/sendConnnectionRequest", userAuth, async (req, res) => {
+    const loggedInUser = req.user;
+    res.send(`${loggedInUser.firstName} sent Connection request `);
+})
+
+
+
+// logout the user
+app.post("/logout", (req, res) => {
+
 })
 // find user by name
 // app.get("/user", async (req, res) => {
