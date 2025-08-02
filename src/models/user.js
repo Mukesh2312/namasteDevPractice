@@ -6,6 +6,9 @@ const { Schema } = mongoose;
 const userSchema = new Schema({
     firstName: {
         type: String,
+        minLength: 3,
+        maxLength: 35,
+        trim: true,
         required: true,
     },
     lastName: {
