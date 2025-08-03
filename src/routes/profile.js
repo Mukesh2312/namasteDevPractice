@@ -21,7 +21,7 @@ profileRouter.get("/profile", userAuth, async (req, res) => {
         // console.log(loggedInUser);
         res.send(loggedInUser)
     } catch (error) {
-        res.status(400).json({ Error: error.message });
+        res.status(400).json({ Error: error.message, err: "jwt not valid" });
     }
 });
 
