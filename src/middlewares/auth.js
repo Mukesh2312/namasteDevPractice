@@ -19,7 +19,7 @@ const userAuth = async (req, res, next) => {
         if (!user) {
             throw new Error("User not found");
         }
-        // creacting user property to req handler and assigning to found user to it
+        // creating user property to req handler and assigning to found user to it
         req.user = user;
         next();
     } catch (error) {
