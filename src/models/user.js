@@ -24,6 +24,7 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
+        minLength: 8,
         required: true,
     },
     age: {
@@ -61,12 +62,12 @@ userSchema.methods.getJWT = async function (params) {
 
 };
 
-userSchema.methods.validatePassword = async function (userInputByPassword) {
+userSchema.methods.validatePassword = async function (passwordInputByUser) {
 
     const user = this;
     const hashedPassword = user.password;
     // first password is which is coming from req
-    const isPasswordValid = await bcrypt.compare(userInputByPassword, hashedPassword);
+    const isPasswordValid = await bcrypt.compare(passwordInputByUser, hashedPassword);
 
     return isPasswordValid;
 

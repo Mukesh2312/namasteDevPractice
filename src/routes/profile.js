@@ -1,7 +1,8 @@
 const express = require("express");
 const profileRouter = express.Router();
+const bcrypt = require("bcrypt");
 const { userAuth } = require("../middlewares/auth")
-const { validateProfileEditData } = require("../utils/validation")
+const { validateProfileEditData, validateNewPassword } = require("../utils/validation")
 
 // user profile route 
 profileRouter.get("/profile/view", userAuth, async (req, res) => {
@@ -34,7 +35,7 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
 
         }
         const loggedInUser = req.user;
-        // saving in the loggedin user 
+        // saving in the loggedIn user 
         Object.keys(req.body).forEach((key) => {
             loggedInUser[key] = req.body[key];
         });
@@ -48,4 +49,32 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     }
 })
 
+profileRouter.patch("/profile/password", userAuth, async (req, res) => {
+    try {
+        // veladating password
+        const { newPassword, confirmNewPassword, oldPassword } = req.body;
+
+        validateNewPassword(newPassword, confirmNewPassword, oldPassword);
+        // console.log(req.body)
+        // loggedInUser coming from userAuth
+        const loggedInUser = req.user;
+
+        // this validatePassword method coming from schema methods
+        const isPasswordMatch = await loggedInUser.validatePassword(oldPassword);
+
+        if (!isPasswordMatch) {
+            throw new Error("Invalid Credentials");
+        }
+
+        loggedInUser.password = await bcrypt.hash(newPassword, 10);
+
+        await loggedInUser.save();
+        console.log(isPasswordMatch);
+
+        res.send(`${loggedInUser.firstName}, Your password has been updated successfully `)
+    } catch (err) {
+        res.status(400).json({ error: err.message })
+
+    }
+})
 module.exports = profileRouter;

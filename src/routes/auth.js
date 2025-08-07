@@ -48,12 +48,13 @@ authRouter.post("/login", async (req, res) => {
         const { emailId, password } = req.body;
 
 
-        // checking if the user is registered or not
+        // checking if the user is registered or not (this is user schema model instance)
         const isUserPresent = await User.findOne({ emailId: emailId });
         if (!isUserPresent) {
             throw new Error("Error : User is Not found!");
         }
 
+        // this valid password coming from user model , this is schema method
         const isPasswordValid = await isUserPresent.validatePassword(password);
 
         if (isPasswordValid) {

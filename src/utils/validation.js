@@ -41,7 +41,32 @@ const validateProfileEditData = (req) => {
 
 
 }
+
+const validateNewPassword = (newPassword, confirmNewPassword, oldPassword) => {
+
+    // const { newPassword, confirmNewPassword, oldPassword } = req.body;
+    if (!newPassword || !confirmNewPassword || !oldPassword) {
+        throw new Error("All fields are required")
+    }
+    if (newPassword !== confirmNewPassword) {
+        throw new Error("New Password and Confirm Password should be same");
+    }
+    if (newPassword === oldPassword) {
+        throw new Error("New Password should not be your current Password");
+    }
+    if (oldPassword.length < 8) {
+        throw new Error("Password length should be at least 8 characters long");
+    }
+
+    if (!validator.isStrongPassword(newPassword)) {
+        throw new Error("Password should be strong");
+    }
+
+    return true;
+
+}
 module.exports = {
     validateSignUpData,
-    validateProfileEditData
+    validateProfileEditData,
+    validateNewPassword,
 }
