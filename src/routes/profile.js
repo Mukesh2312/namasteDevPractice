@@ -66,6 +66,7 @@ profileRouter.patch("/profile/password", userAuth, async (req, res) => {
             throw new Error("Invalid Credentials");
         }
 
+        // hashing the password before saving it into the database
         loggedInUser.password = await bcrypt.hash(newPassword, 10);
 
         await loggedInUser.save();
