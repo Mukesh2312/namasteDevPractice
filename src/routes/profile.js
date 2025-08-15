@@ -51,11 +51,11 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
 
 profileRouter.patch("/profile/password", userAuth, async (req, res) => {
     try {
-        // veladating password
         const { newPassword, confirmNewPassword, oldPassword } = req.body;
 
+        // validating password
         validateNewPassword(newPassword, confirmNewPassword, oldPassword);
-        // console.log(req.body)
+
         // loggedInUser coming from userAuth
         const loggedInUser = req.user;
 
