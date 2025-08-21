@@ -6,11 +6,14 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = 5500;
 
+// middlewares
 app.use(express.json());
 app.use(cookieParser());
 
 // routers
 
+
+// importing routers
 const authRouter = require("./routes/auth.js");
 const profileRouter = require("./routes/profile");
 const requestRouter = require('./routes/request');
@@ -122,6 +125,6 @@ connectDb().then(() => {
         console.log(`server is running on port number ${PORT}`);
     })
 }).catch((err) => {
-    console.log("not connected");
+    console.log(`${err} : Database connection failed`);
 
 })
