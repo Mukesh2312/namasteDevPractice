@@ -65,6 +65,7 @@ userSchema.methods.getJWT = async function (params) {
 userSchema.methods.validatePassword = async function (passwordInputByUser) {
 
     const user = this;
+    // assigning user password into the var from the database 
     const hashedPassword = user.password;
     // first password is which is coming from req
     const isPasswordValid = await bcrypt.compare(passwordInputByUser, hashedPassword);

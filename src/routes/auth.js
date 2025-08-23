@@ -15,15 +15,15 @@ authRouter.post("/signup", async (req, res) => {
 
         const { firstName, lastName, emailId, age, password, skills, about, photoUrl } = req.body;
 
-        const securingPassword = await bcrypt.hash(password, 10)
+        const securingPassword = await bcrypt.hash(password, 10);
 
         // checking duplicate user registration or already exists
-        const existingUser = await User.findOne({ emailId: emailId });
-        if (existingUser) {
+        const isExistingUser = await User.findOne({ emailId: emailId });
+        if (isExistingUser) {
             return res.status(400).send("Email should be unique");
         }
         // console.log(req.body)
-        // creating new user and saving in the database
+        // creating new user and saving into the database
         const user = new User({
             firstName,
             lastName,
@@ -81,8 +81,8 @@ authRouter.post("/login", async (req, res) => {
 authRouter.post("/logout", (req, res) => {
     res.cookie("token", null, {
         expires: new Date(Date.now())
-    })
-    res.send("logout ")
+    });
+    res.send("logout Successful");
 })
 
 

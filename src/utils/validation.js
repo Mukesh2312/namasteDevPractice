@@ -8,7 +8,10 @@ const validateSignUpData = (req) => {
         throw new Error("Name is not Valid");
     }
 
+    // removing extra spaces and after that transform into the lowercase
     emailId = emailId.trim().toLowerCase();
+    // the function we had perform above 
+    // we are assigning that result into the main email input by user
     req.body.emailId = emailId;
 
     if (!validator.isEmail(emailId)) {
@@ -51,6 +54,9 @@ const validateNewPassword = (newPassword, confirmNewPassword, oldPassword) => {
     if (newPassword !== confirmNewPassword) {
         throw new Error("New Password and Confirm Password should be same");
     }
+
+    // 🛑we are comparing only user input password but we should need to 
+    //compare old new password to the old password that is stored in db⛔
     if (newPassword === oldPassword) {
         throw new Error("New Password should not be your current Password");
     }
