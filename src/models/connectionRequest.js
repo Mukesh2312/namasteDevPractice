@@ -21,7 +21,17 @@ const connectionRequestSchema = new Schema({
 },
     { timestamps: true });
 
+connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 });
 
+connectionRequestSchema.pre("save", function (next) {
+    const connectionRequest = this;
+
+    if (connectionRequest.fromUserId.equals(connectionRequest.toUserId)) {
+        throw new Error("Invalid connection request!");
+    }
+
+    next();
+})
 const ConnectionRequest = model("ConnectionRequest", connectionRequestSchema);
 
 module.exports = {
