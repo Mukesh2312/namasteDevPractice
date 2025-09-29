@@ -17,7 +17,7 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
         // only allowed fields in params
         const allowedStatus = ["ignored", "interested"];
 
-        // if there are other status types rather allowedStatus it will give error
+        // if there are other status types rather than allowedStatus it will give error
         if (!allowedStatus.includes(status)) {
             return res.status(400).json({ "message": "Invalid status type " + status })
         }

@@ -55,6 +55,8 @@ authRouter.post("/login", async (req, res) => {
         }
 
         // this valid password coming from user model , this is schema method
+        // validatePassword is schema method 
+        // find in User model
         const isPasswordValid = await isUserPresent.validatePassword(password);
 
         if (isPasswordValid) {
