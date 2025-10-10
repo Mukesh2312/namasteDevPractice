@@ -59,4 +59,47 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
     }
 })
 
+requestRouter.post("/request/review/:status/:requestId", userAuth, async (req, res) => {
+    try {
+
+        const loggedInUser = req.user;
+        const { status, requestId } = req.params;
+
+
+        // only allowed status types
+        const allowedStatus = ["accepted", "rejected"];
+
+        if (!allowedStatus.includes(status)) {
+            return res.status(400).json({ Error: "Invalid Status Type" });
+        }
+
+        // checking connection request into the db
+
+        // creating instance
+        const connectionRequest = await ConnectionRequest.findOne({
+            _id: requestId,
+            toUserId: loggedInUser,
+            status: "interested",
+        });
+
+
+        // if not found it will throw error to the user
+        if (!connectionRequest) {
+            return res.status(404).json({ message: "Connection Request not found." });
+        }
+        // changed the status into the instance
+        connectionRequest.status = status;
+
+        // saving instance into the database
+        const data = await connectionRequest.save();
+
+        // sending the response to the user
+        res.json({ message: "Connection request " + status, data })
+
+
+    } catch (error) {
+        res.status(400).send("Error :", error)
+    }
+})
+
 module.exports = requestRouter;
