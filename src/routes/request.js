@@ -50,7 +50,7 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
         // saving that request instance into the db
         const requestData = await connectionRequest.save();
         res.json({
-            "message": `Successful`,
+            "message": `Connection request send to the ${isUserPresent.firstName} has been Successful`,
             requestData,
         });
 
@@ -66,39 +66,34 @@ requestRouter.post("/request/review/:status/:requestId", userAuth, async (req, r
         const { status, requestId } = req.params;
 
 
+
         // only allowed status types
-        const allowedStatus = ["accepted", "rejected"];
 
-        if (!allowedStatus.includes(status)) {
-            return res.status(400).json({ Error: "Invalid Status Type" });
+        const allowedFields = ["accepted", "rejected"];
+        if (!allowedFields.includes(status)) {
+            return res.status(400).json({ message: "Status type in not valid" });
         }
-
         // checking connection request into the db
-
-        // creating instance
-        const connectionRequest = await ConnectionRequest.findOne({
+        const existingConnectionRequest = await ConnectionRequest.findOne({
             _id: requestId,
             toUserId: loggedInUser,
             status: "interested",
-        });
+        })
 
-
-        // if not found it will throw error to the user
-        if (!connectionRequest) {
-            return res.status(404).json({ message: "Connection Request not found." });
+        // if there is no connection request found it will throw error
+        if (!existingConnectionRequest) {
+            return res.status(404).json({ message: "Request not found!" });
         }
-        // changed the status into the instance
-        connectionRequest.status = status;
 
-        // saving instance into the database
-        const data = await connectionRequest.save();
+        // if connection request found 
+        // change the status type 
+        existingConnectionRequest.status = status;
 
-        // sending the response to the user
+        const data = await existingConnectionRequest.save();
         res.json({ message: "Connection request " + status, data })
 
-
     } catch (error) {
-        res.status(400).send("Error :", error)
+        res.status(400).json({ message: "Something went wrong", error: error.message })
     }
 })
 
