@@ -37,15 +37,22 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
             .populate("toUserId", userSafeData)
 
         console.log(connectionsList)
-        const data = connectionsList.map((row) => {
 
+
+        const data = connectionsList.map((row) => {
             if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
                 return row.toUserId;
             } else {
                 return row.fromUserId;
             }
         });
-
+        // const data = connectionsList.map((row) => {
+        //     const fromId = row.fromUserId?._id;
+        //     const toId = row.toUserId?._id;
+        //     if (!fromId || !toId) return null;
+        //     return fromId.equals(loggedInUser._id) ? row.toUserId : row.fromUserId;
+        // }).filter(Boolean);
+        console.log(data)
         res.json({ message: "data received successfully", data })
     } catch (error) {
         res.status(400).json({ message: "Something went wrong", error: error.message })
