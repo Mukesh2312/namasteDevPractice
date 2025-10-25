@@ -4,10 +4,17 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = 5500;
+const cors = require('cors');
 
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors(
+    {
+        origin: 'http://localhost:5173',
+        credentials: true,
+    }
+));
 
 // routers
 
